@@ -37,7 +37,7 @@ for idx, course in enumerate(courses, start=1):
     fall = 'TRUE' if course.get('fall') else 'FALSE'
     winter = 'TRUE' if course.get('winter') else 'FALSE'
 
-    sql = f"INSERT INTO Course (id, dept, code, campus, title, url, workload, cavg, ctype, summer, fall, winter) VALUES ({idx}, '{department}', '{course_number}', '{campus}', '{title}', '{url}', 0, '{course_avg}', {ctype}, {summer}, {fall}, {winter});"
+    sql = f"INSERT INTO Course (id, dept, code, campus, cname, url, workload, cavg, ctype, summer, fall, winter) VALUES ({idx}, '{department}', '{course_number}', '{campus}', '{title}', '{url}', 0, '{course_avg}', {ctype}, {summer}, {fall}, {winter});"
     sql_statements.append(sql)
 
 # Write the SQL statements to insert.sql
