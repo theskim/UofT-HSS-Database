@@ -11,6 +11,8 @@ def parse_course_code(course_code):
     return department, course_number, campus
 
 sql_statements = []
+courses = sorted(courses, key=lambda x: (parse_course_code(x.get('code', ''))[0], parse_course_code(x.get('code', ''))[1]))
+
 for idx, course in enumerate(courses, start=1):
     code = course.get('code', '').replace("'", "''")
     title = course.get('title', '').replace("'", "''")
@@ -25,7 +27,7 @@ for idx, course in enumerate(courses, start=1):
 
     # description and ctype
     description = course.get('description', '').replace("'", "''")
-    if description == "CS Elective":
+    if "CS Elective" in description:
         description = ""
         ctype = "'CS'"
     else:
