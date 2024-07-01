@@ -10,10 +10,14 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 @RestController
 @RequestMapping(path = "/api/courses")
 public class CourseController {
     private final CourseService courseService;
+    private static final Logger logger = LoggerFactory.getLogger(CourseController.class);
 
     @Autowired
     public CourseController(CourseService courseService) {
@@ -39,8 +43,14 @@ public class CourseController {
     public List<Course> getCourses(
             @RequestParam(required = false) String id,
             @RequestParam(required = false) String deptCode,
-            @RequestParam(required = false) String name
+            @RequestParam(required = false) String cname,
+            @RequestParam(required = false) String cavg,
+            @RequestParam(required = false) boolean summer,
+            @RequestParam(required = false) boolean fall,
+            @RequestParam(required = false) boolean winter
     ) {
+        logger.info("Received parameters - id: {}, deptCode: {}, cname: {}, summer: {}, fall: {}, winter: {}",
+                id, deptCode, cname, summer, fall, winter);
 
         if (id != null && !id.isEmpty()) {
             Course course = courseService.getCourseById(Integer.parseInt(id));
@@ -61,8 +71,32 @@ public class CourseController {
                 }
             }
         }
-        if (name != null && !name.isEmpty()) {
-            return courseService.getCoursesByName(name);
+        if (cname != null && !cname.isEmpty()) {
+            return courseService.getCoursesByName(cname);
+        }
+        if (cavg != null && !cavg.isEmpty()) {
+            return courseService.getCoursesAboveAverage(cavg);
+        }
+        if (Boolean.TRUE.equals(summer) && Boolean.TRUE.equals(fall) && Boolean.TRUE.equals(winter)) {
+            return courseService.getCoursesOfferedInAll();
+        }
+        if (Boolean.TRUE.equals(summer) && Boolean.TRUE.equals(fall)) {
+            return courseService.getCoursesOfferedInSummerAndFall();
+        }
+        if (Boolean.TRUE.equals(summer) && Boolean.TRUE.equals(winter)) {
+            return courseService.getCoursesOfferedInSummerAndWinter();
+        }
+        if (Boolean.TRUE.equals(fall) && Boolean.TRUE.equals(winter)) {
+            return courseService.getCoursesOfferedInFallAndWinter();
+        }
+        if (Boolean.TRUE.equals(summer)) {
+            return courseService.getCoursesOfferedInSummer();
+        }
+        if (Boolean.TRUE.equals(fall)) {
+            return courseService.getCoursesOfferedInFall();
+        }
+        if (Boolean.TRUE.equals(winter)) {
+            return courseService.getCoursesOfferedInWinter();
         }
         return courseService.getAllCourses();
     }
